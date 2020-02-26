@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <Description />
+  <DataSet Name="AdventureWorksDataset">
+    <Query>
+      <DataSourceReference>AdventureWorks2014</DataSourceReference>
+      <CommandText>SELECT
+  soh.OrderDate AS [Date],
+  soh.SalesOrderNumber AS [Order],
+  pps.Name AS Subcat, pp.Name as Product,
+  SUM(sd.OrderQty) AS Qty,
+  SUM(sd.LineTotal) AS LineTotal
+, CONCAT(pepe.FirstName, ' ', pepe.LastName) AS SalesPersonName
+FROM Sales.SalesPerson sp INNER JOIN Person.Person as pepe ON sp.BusinessEntityID = pepe.BusinessEntityID
+  INNER JOIN Sales.SalesOrderHeader AS soh ON sp.BusinessEntityID = soh.SalesPersonID
+  INNER JOIN Sales.SalesOrderDetail AS sd ON sd.SalesOrderID = soh.SalesOrderID
+  INNER JOIN Production.Product AS pp ON sd.ProductID = pp.ProductID
+  INNER JOIN Production.ProductSubcategory AS pps ON pp.ProductSubcategoryID = pps.ProductSubcategoryID
+  INNER JOIN Production.ProductCategory AS ppc ON ppc.ProductCategoryID = pps.ProductCategoryID
+GROUP BY ppc.Name, soh.OrderDate, soh.SalesOrderNumber,
+         pps.Name, pp.Name, soh.SalesPersonID
+ , pepe.FirstName, pepe.LastName
+HAVING ppc.Name = 'Clothing'</CommandText>
+    </Query>
+    <Fields>
+      <Field Name="Date">
+        <DataField>Date</DataField>
+        <rd:TypeName>System.DateTime</rd:TypeName>
+      </Field>
+      <Field Name="Order">
+        <DataField>Order</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Subcat">
+        <DataField>Subcat</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Product">
+        <DataField>Product</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Qty">
+        <DataField>Qty</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+      <Field Name="LineTotal">
+        <DataField>LineTotal</DataField>
+        <rd:TypeName>System.Decimal</rd:TypeName>
+      </Field>
+      <Field Name="SalesPersonName">
+        <DataField>SalesPersonName</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+    </Fields>
+  </DataSet>
+</SharedDataSet>
