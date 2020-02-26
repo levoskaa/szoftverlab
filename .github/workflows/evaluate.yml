@@ -1,0 +1,24 @@
+name: Evaluation
+
+on:
+  pull_request:
+    types: [opened, synchronize, labeled]
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-18.04
+
+    timeout-minutes: 1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Collect screenshots
+        uses: akosdudas/ahk-action-publish-result-pr@master
+        with:
+          image-extension: ".png"
+          input-file: null
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
