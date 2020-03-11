@@ -175,10 +175,212 @@ j) A kiadott parancsok:
 
 Magyarázat: Mindegy, hogy a megadott konstans jól vagy rosszul szűr, az optimalizálónak fontosabb, hogy elkerülje a költséges rendezést, ezért használni fogja a Non-Clustered indexet.
 
-## Következő nagyon izgalmas feladat
+## Feladat 6
 
-Add meg a használt SQL utasításokat. Ha egy feladatban nagyon hasonlóak (mint fentebb), nem szükséges mindegyiket megadod, csak jelezd 1-2 példával.
+f) A kiadott parancsok:
 
-A kapott lekérdezési tervet képként tedd be. Ha a lekérdezési tervek nagyon hasonlóak (mint az első feladatban), elég csak egyet megmutatnod.
+- `select id, NettoAr from termek`
 
-Értékeld a kapott tervet, magyarázd meg, mit látsz, és miért.
+![](f6f.png)
+
+Magyarázat: Mivel nem az egész rekordra kérdezünk rá, hanem csak olyan oszlopokra amiken van index, ezért az optimalizáló tudja használni a korábban létrehozott Non-Clustered indexet (NettoAr oszlopon) és csak index alapján hajtja végre a keresést.
+
+g) A kiadott parancsok:
+
+- `select id, NettoAr from termek where NettoAr = 800`
+
+![](f6g.png)
+
+Magyarázat: Nincs szükség Join-ra, mert a kapott referenciákból az optimalizáló az index alapján ki tudja olvasni a lekérdezésben szereplő mindkét mezőt.
+
+h) A kiadott parancsok:
+
+- `select id, NettoAr from termek where NettoAr <> 800`
+
+![](f6h.png)
+
+Magyarázat: Az optimalizáló a sorokat Non-Clustered Index Seek segítségével választja ki, az ID és a NettoAr oszlopokra pedig az ábrán lévő fenti utat használja. ???
+
+i) A kiadott parancsok:
+
+- `select id, NettoAr from termek where NettoAr > 800`
+
+Lekérdezési terv ugyanaz mint Feladat 6 g)-nél.
+
+Magyarázat: Lásd Feladat 6 g).
+
+j) A kiadott parancsok:
+
+- `select id, NettoAr from termek > 800 order by NettoAr desc`
+
+Lekérdezési terv ugyanaz mint Feladat 6 g)-nél.
+
+Magyarázat: Lásd Feladat 6 g).
+
+## Feladat 7
+
+k) A kiadott parancsok:
+
+- `select * from termek where id between 10 and 30`
+
+![](f7k.png)
+
+Magyarázat: Az id oszlopon lévő Clustered indexet használja a rekordok megkeresésére. Az index bejegyzések sorba rendezett tulajdonsága miatt könnyű volt az intervallumra szűrni.
+
+l) A kiadott parancsok:
+
+- `select * from termek where (id between 10 and 30) or id = 100`
+
+Lekérdezési terv ugyanaz mint Feladat 7 k)-nál.
+
+Magyarázat: Az intervallumra és egy konkrét értékre továbbra is egyszerű szűrni a Clustered index-szel.
+
+## Feladat 8
+
+m) A kiadott parancsok:
+
+- `select id, NettoAr from termek where cast(NettoAr as int) = 800`
+
+![](f8m.png)
+
+Magyarázat: Mindkét esetben egy Nonclustered index seek eljárást választ egy Tól-ig tartományban. Az első esetben ezzel párhuzamosan megtörténik egy castolás a NettoAr oszlopra majd ennek végeredményét egy nested loop join összeköti az előző kereséssel. ???
+
+n) A kiadott parancsok:
+
+- `select id, NettoAr from termek where NettoAr BETWEEN 800-0.0001 AND 800+0.0001`
+
+![](f8n.png)
+
+Magyarázat: 
+
+## Feladat 9
+
+o) A kiadott parancsok:
+
+- `select * from termek where NettoAr < 20 order by id desc`
+
+![](f9o.png)
+
+Magyarázat: 
+
+p) A kiadott parancsok:
+
+- `select id, NettoAr from termek where NettoAr < 20 order by id desc`
+
+![](f9p.png)
+
+Magyarázat: 
+
+q) A kiadott parancsok:
+
+- `select * from termek where NettoAr > 20 order by id desc`
+
+![](f9q.png)
+
+Magyarázat: 
+
+r) A kiadott parancsok:
+
+- `select id, NettoAr from termek where NettoAr > 20 order by id desc`
+
+![](f9r.png)
+
+Magyarázat: 
+
+## Feladat 10
+
+s) A kiadott parancsok:
+
+- `select id, Nev from termek where SUBSTRING(nev, 1, 1) = 'Z'`
+
+![](f10s.png)
+
+Magyarázat: 
+
+t) A kiadott parancsok:
+
+- `select id, Nev from termek where Nev like 'Z%'`
+
+![](f10t.png)
+
+Magyarázat: 
+
+u) A kiadott parancsok:
+
+- `select id, Nev from termek where Nev like '%Z%'`
+
+![](f10u.png)
+
+Magyarázat: 
+
+v) A kiadott parancsok:
+
+- `select id from termek where Nev = 'Zenélo bébitelefon'`
+
+![](f10v.png)
+
+Magyarázat: 
+
+w) A kiadott parancsok:
+
+- `select id from termek where UPPER(Nev) = 'ZENÉLŐ BÉBITELEFON'`
+
+![](f10w.png)
+
+Magyarázat: 
+
+## Feladat 11
+
+x) A kiadott parancsok:
+
+- `select MAX(id) from termek`
+
+![](f11x.png)
+
+Magyarázat: 
+
+y) A kiadott parancsok:
+
+- `select MIN(NettoAr) from termek`
+
+![](f11y.png)
+
+Magyarázat: 
+
+## Feladat 12
+
+A kiadott parancsok:
+
+- `select kategoria.nev, COUNT(*) from termek, kategoria where termek.kategoriaid = kategoria.id group by kategoria.nev`
+
+![](f12.png)
+
+- `select COUNT(*) from termek group by kategoriaid`
+
+![](f12_2.png)
+
+Magyarázat: 
+
+## Feladat 13
+
+A kiadott parancsok:
+
+- új index a KategoriaId oszlopra
+
+![](f13.png)
+
+## Feladat 14
+
+A kiadott parancsok:
+
+- `select nev from termek where kategoriaid = 9`
+
+![](f14.png)
+
+## Feladat 15
+
+A kiadott parancsok:
+
+- `select nev from termek where kategoriaid = 9`
+
+![](f15.png)
