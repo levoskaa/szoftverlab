@@ -22,7 +22,7 @@ a) A kiadott parancsok:
 
 ![](f2a.png)
 
-Magyarázat: Elsődleges kulcs mentén létrejön a Clustered Index, a tábla rekordjai index szerint növekvő sorrendben vannak tárolva, így a lekérdező index szerint végig megy a táblán.
+Magyarázat: Elsődleges kulcs mentén létrejön a Clustered Index, a tábla rekordjai index szerint növekvő sorrendben vannak tárolva, így a lekérdező index szerint végigmegy a táblán.
 
 b) A kiadott parancsok:
 
@@ -70,9 +70,9 @@ g) A kiadott parancsok:
 
 - `select * from termek where NettoAr = 800`
 
-![](f3g.png) TODO
+![](f3g.png)
 
-Magyarázat: Az egyenlőségi feltétel nem elsődleges kulcsra vonatkozik, így a teljes táblát végig kell nézni és mindenhol ki kell érteklni a feltételt.
+Magyarázat: Az egyenlőségi feltétel nem elsődleges kulcsra vonatkozik, így a teljes táblát végig kell nézni és mindenhol ki kell értékelni a feltételt.
 
 h) A kiadott parancsok:
 
@@ -145,7 +145,7 @@ Magyarázat: A Non-Clustered index visszaadja a referenciákat, amik alapján ki
 f) A kiadott parancsok:
 - `select * from termek`
 
-Magyarázat: Nincs változás Feladat 4 f)-hez képest.
+Magyarázat: Nincs változás a Feladat 4 f)-hez képest.
 
 g) A kiadott parancsok:
 - `select * from termek where NettoAr = 800`
@@ -191,7 +191,7 @@ g) A kiadott parancsok:
 
 ![](f6g.png)
 
-Magyarázat: Nincs szükség Join-ra, mert a kapott referenciákból az optimalizáló az index alapján ki tudja olvasni a lekérdezésben szereplő mindkét mezőt.
+Magyarázat: A tábla nagy mérete és a feltételt kielégítő kevés rekord miatt (NettoAr = 800 jól szűr) az optimalizáló Index Seeket használ. Nincs szükség Join-ra, mert a kapott referenciákból az optimalizáló az index alapján ki tudja olvasni a lekérdezésben szereplő mindkét mezőt.
 
 h) A kiadott parancsok:
 
@@ -199,7 +199,7 @@ h) A kiadott parancsok:
 
 ![](f6h.png)
 
-Magyarázat: Az optimalizáló a sorokat Non-Clustered Index Seek segítségével választja ki, az ID és a NettoAr oszlopokra pedig az ábrán lévő fenti utat használja. ???
+Magyarázat: A lekérdezést két intervallumra bontja az optimalizáló (< 800 és > 800). Ehhez tudja használni a NettoAr oszlopra definiált indexet és így a két részeredményt összerakva megkapja az eredményt.
 
 i) A kiadott parancsok:
 
@@ -215,7 +215,7 @@ j) A kiadott parancsok:
 
 Lekérdezési terv ugyanaz mint Feladat 6 g)-nél.
 
-Magyarázat: Lásd Feladat 6 g).
+Magyarázat: Lásd Feladat 6 g). Az index referenciákat ad vissza és mivel a referenciák sorrendben vannak, ezért ha ezekhez kigyűjtjük az egyes rekordokat akkor megspórolható a rendezés.
 
 ## Feladat 7
 
@@ -243,7 +243,7 @@ m) A kiadott parancsok:
 
 ![](f8m.png)
 
-Magyarázat: Mindkét esetben egy Nonclustered index seek eljárást választ egy Tól-ig tartományban. Az első esetben ezzel párhuzamosan megtörténik egy castolás a NettoAr oszlopra majd ennek végeredményét egy nested loop join összeköti az előző kereséssel. ???
+Magyarázat: A castolás során az optimalizáló a 800-at castolja floattá (olcsóbb egy db integert floattá konvertálni, mint sok floatot integerré) és használja a NettoAr indexet, mert erre vonatkozott a szűrés.
 
 n) A kiadott parancsok:
 
@@ -251,7 +251,7 @@ n) A kiadott parancsok:
 
 ![](f8n.png)
 
-Magyarázat: 
+Magyarázat: Hasonló az előzőhöz (az eredményhalmaz meg is egyezik), de itt egyenlőség helyett egy nagyon szűk intervallumra szűrünk, amihez jól használható az Index Seek.
 
 ## Feladat 9
 
@@ -261,7 +261,7 @@ o) A kiadott parancsok:
 
 ![](f9o.png)
 
-Magyarázat: 
+Magyarázat: Az optimalizáló Index Seeket használva (mert a NettoAr < 20 kevés rekordra igaz) kiszűri a feltételt teljesítő rekordokat, amik NettoAr alapján vannak rendezve. A rekordok összes mezőjére kíváncsiak vagyunk, ezért az optimalizálónak ezeket külön meg kell keresnie a kiszűrt rekordokhoz. Plusz mi NettoAr helyett id alapján történő rendezést akarunk, ezért az alapján még rendezi az eredményt.
 
 p) A kiadott parancsok:
 
@@ -269,7 +269,7 @@ p) A kiadott parancsok:
 
 ![](f9p.png)
 
-Magyarázat: 
+Magyarázat: Hasonló az előzőhöz, de az összes mező helyett csak az id és NettoAr mezőkre vagyunk kíváncsiak (mindkettőre van index definiálva), ezért elmarad a Key Lookup és Join rész.
 
 q) A kiadott parancsok:
 
@@ -277,15 +277,15 @@ q) A kiadott parancsok:
 
 ![](f9q.png)
 
-Magyarázat: 
+Magyarázat: A NettoAr > 20 rosszul szűr, ezért a várhatóan nagy eredményhalmaz miatt Index Seek helyett Index Scant használ. Mivel a teljes elsődleges indexet végigolvassa, ezért nincs szükség rendezésre, mert az elsődleges indexben már id alapján vannak rendezve a rekordok.
 
 r) A kiadott parancsok:
 
 - `select id, NettoAr from termek where NettoAr > 20 order by id desc`
 
-![](f9r.png)
+A lekérdezési terv nem változott.
 
-Magyarázat: 
+Magyarázat: Hasonló az előzőhöz, de nincs jelentősége annak, hogy csak az id és NettoAr mezők érdekelnek minket, mert így is végigolvassa az egész elsődleges indexet.
 
 ## Feladat 10
 
@@ -295,7 +295,7 @@ s) A kiadott parancsok:
 
 ![](f10s.png)
 
-Magyarázat: 
+Magyarázat: A Substring függvényhívásnál az optimalizáló nem tud Index Seeket használni, mert a függvénynek nem tudja előre megmondani a visszatérési értékét. Ezért az egész index táblát végigolvassa és minden rekordra alkalmazza a Substring függvényt.
 
 t) A kiadott parancsok:
 
@@ -303,7 +303,7 @@ t) A kiadott parancsok:
 
 ![](f10t.png)
 
-Magyarázat: 
+Magyarázat: Hasonló az előzőhöz, de a LIKE 'Z%' feltétel már lehetővé teszi a rendezettség kihasználását, ezért Index Seeket használ az optimalizáló.
 
 u) A kiadott parancsok:
 
@@ -311,7 +311,7 @@ u) A kiadott parancsok:
 
 ![](f10u.png)
 
-Magyarázat: 
+Magyarázat: Index Scant használ, mert a feltétel miatt a rendezettség nem kihasználható, és a teljes index végigolvasásra kerül.
 
 v) A kiadott parancsok:
 
@@ -319,7 +319,7 @@ v) A kiadott parancsok:
 
 ![](f10v.png)
 
-Magyarázat: 
+Magyarázat: Index Seeket használ, mert az egyenlőség ellenőrzésénél kihasználható a rendezettség.
 
 w) A kiadott parancsok:
 
@@ -327,7 +327,7 @@ w) A kiadott parancsok:
 
 ![](f10w.png)
 
-Magyarázat: 
+Magyarázat: Az Upper is függvényhívás, lásd Feladat 10 s).
 
 ## Feladat 11
 
