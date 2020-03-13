@@ -225,7 +225,7 @@ k) A kiadott parancsok:
 
 ![](f7k.png)
 
-Magyarázat: Az id oszlopon lévő Clustered indexet használja a rekordok megkeresésére. Az index bejegyzések sorba rendezett tulajdonsága miatt könnyű volt az intervallumra szűrni.
+Magyarázat: Az id oszlopon lévő Clustered indexet használja a rekordok megkeresésére. Az indexbejegyzések sorba rendezett tulajdonsága miatt könnyű volt az intervallumra szűrni.
 
 l) A kiadott parancsok:
 
@@ -337,7 +337,7 @@ x) A kiadott parancsok:
 
 ![](f11x.png)
 
-Magyarázat: 
+Magyarázat: Az indexben a bejegyzések (és a rekordok) id alapján vannak rendezve, az optimalizáló a legutolsó indexbejegyzéssel kezdi a szűrést (BACKWARD scan), de a TOP 1 miatt az utolsón kívül nem is olvas ki mást.
 
 y) A kiadott parancsok:
 
@@ -345,7 +345,7 @@ y) A kiadott parancsok:
 
 ![](f11y.png)
 
-Magyarázat: 
+Magyarázat: Hasonló az előzőhöz, a különbség annyi, hogy a NettoAr oszlopra létrehozott indexet használja, mert most a NettoAr minimumára vagyunk kíváncsiak.
 
 ## Feladat 12
 
@@ -359,7 +359,7 @@ A kiadott parancsok:
 
 ![](f12_2.png)
 
-Magyarázat: 
+Magyarázat: Az optimalizáló előnyben részesíti a Hash Match Aggregate-t, ha nagy rekordszámmal és kevés csoporttal van dolga (jelen esetben: ~1 milló rekord, 7 csoport), ezért használja most ezt. Index Scant használ, mert az összes rekordot meg kell vizsgálnia.
 
 ## Feladat 13
 
@@ -369,6 +369,8 @@ A kiadott parancsok:
 
 ![](f13.png)
 
+Magyarázat: Az új indexben az indexbejegyzések KategoriaId alapján vannak rendezve, ezt végigolvasva az azonos kategóriához tartozó rekordok közvetlen egymás után vannak, ezért nincs szükség Hash Match Aggregate-re. Az előzőhöz hasonlóan megint Index Scant használ.
+
 ## Feladat 14
 
 A kiadott parancsok:
@@ -377,6 +379,8 @@ A kiadott parancsok:
 
 ![](f14.png)
 
+Magyarázat: Az optimalizáló az előző feladatban felvett indexet használta, mert a szűrés kategoriaid alapján történt. Index Seeket használt, mert a feltételnek kevés rekord felel meg. Ezután a megtalált rekordoknak az id-jük alapján megkereste a nev mező értékét.
+
 ## Feladat 15
 
 A kiadott parancsok:
@@ -384,3 +388,5 @@ A kiadott parancsok:
 - `select nev from termek where kategoriaid = 9`
 
 ![](f15.png)
+
+Magyarázat: Az előzőhöz hasonlóan az új indexet és Index Seeket használ az optimalizáló. Itt azért nincs szükség Key Lookupra, mert a indexet kiegészítettük a nev oszloppal, ezért csak az indexbejegyzésekből kiolvasható az eredmény.
