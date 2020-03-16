@@ -1,0 +1,42 @@
+name: Evaluation
+
+on:
+  pull_request:
+    types: [opened, synchronize, labeled]
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-18.04
+
+    timeout-minutes: 3
+
+    services:
+      mssqlserver:
+        image: mcr.microsoft.com/mssql/server:2017-CU17-ubuntu
+        ports:
+          - 1433:1433
+        env:
+          ACCEPT_EULA: "Y"
+          SA_PASSWORD: "xE4AK2J1uaMcm4qW"
+          MSSQL_PID: "express"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Check neptun.txt
+        uses: akosdudas/ahk-action-neptuncheck@master
+
+      - name: Evaluate
+        uses: docker://akosdudas/sflab-ahk:mssql-2020
+        env:
+          DATABASE_CONNECTIONSTRING: "Server=mssqlserver;User id=sa;Password=xE4AK2J1uaMcm4qW"
+
+      - name: Publish results
+        uses: akosdudas/ahk-action-publish-result-pr@master
+        with:
+          input-file: "result.txt"
+          image-extension: ".png"
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
