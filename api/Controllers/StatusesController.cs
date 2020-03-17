@@ -18,5 +18,49 @@ namespace api.Controllers
         {
             this.repository = repository;
         }
+
+        [HttpGet]
+        public IEnumerable<Status> List()
+        {
+            return repository.List();
+        }
+
+        [HttpHead("{statusName}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult ExistsWithName(string statusName)
+        {
+            var exists = repository.ExistsWithName(statusName);
+            if (exists)
+                return Ok();
+            return NotFound();
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<Status> Get(int id)
+        {
+            var value = repository.FindById(id);
+            if (value == null)
+                return NotFound();
+            return Ok(value);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<Status> Create([FromBody] Dto.CreateStatus value)
+        {
+            try
+            {
+                var created = repository.Insert(value);
+                return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
+            }
+            catch (ArgumentException ae)
+            {
+                return BadRequest(new { error = ae.Message });
+            }
+        }
     }
 }

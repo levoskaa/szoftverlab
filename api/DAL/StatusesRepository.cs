@@ -19,22 +19,41 @@ namespace api.DAL
 
         public bool ExistsWithName(string statusName)
         {
-            throw new NotImplementedException();
+            return db.Statuses.Any(s => s.Name.ToUpperInvariant() == statusName.ToUpperInvariant());
         }
 
         public Status FindById(int statusId)
         {
-            throw new NotImplementedException();
+            var dbRecord = db.Statuses.FirstOrDefault(s => s.Id == statusId);
+            if (dbRecord == null)
+                return null;
+            return ToModel(dbRecord);
         }
 
         public Status Insert(CreateStatus value)
         {
-            throw new NotImplementedException();
+            using (var tran = db.Database.BeginTransaction(System.Data.IsolationLevel.RepeatableRead))
+            {
+                if (db.Statuses.Any(s => s.Name.ToUpperInvariant() == value.Name.ToUpperInvariant()))
+                    throw new ArgumentException("Name must be unique");
+
+                var toInsert = new DbStatus() { Name = value.Name };
+                db.Statuses.Add(toInsert);
+                db.SaveChanges();
+                tran.Commit();
+
+                return new Status(toInsert.Id, toInsert.Name);
+            }
         }
 
         public IReadOnlyCollection<Status> List()
         {
-            throw new NotImplementedException();
+            return db.Statuses.Select(ToModel).ToList();
+        }
+
+        private static Model.Status ToModel(DbStatus value)
+        {
+            return new Model.Status(value.Id, value.Name);
         }
     }
 }
