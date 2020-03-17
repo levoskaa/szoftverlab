@@ -1,0 +1,38 @@
+name: Evaluation
+
+on:
+  pull_request:
+    types: [opened, synchronize, labeled]
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-18.04
+
+    timeout-minutes: 2
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Check neptun.txt
+        uses: akosdudas/ahk-action-neptuncheck@master
+
+      - name: Prepare .NET SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "2.1.607"
+
+      - name: Build sln
+        run: dotnet build
+
+      - name: Evaluate
+        uses: docker://akosdudas/sflab-ahk:efrest-2020
+
+      - name: Publish results
+        uses: akosdudas/ahk-action-publish-result-pr@master
+        with:
+          input-file: "result.txt"
+          image-extension: ".png"
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
