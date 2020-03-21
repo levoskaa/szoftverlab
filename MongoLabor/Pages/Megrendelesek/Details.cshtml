@@ -1,0 +1,49 @@
+﻿@page
+@model MongoLabor.Pages.Megrendelesek.DetailsModel
+
+@{
+    ViewData["Title"] = "Megrendelés részletei";
+}
+
+<h2>Megrendelés részletei</h2>
+
+<div>
+    <h4>Megrendelés</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Dátum
+        </dt>
+        <dd>
+            @(Model.Megrendeles.Datum.HasValue ? Model.Megrendeles.Datum.Value.ToString("d") : "N/A")
+        </dd>
+        <dt>
+            Határidő
+        </dt>
+        <dd>
+            @(Model.Megrendeles.Hatarido.HasValue ? Model.Megrendeles.Hatarido.Value.ToString("d") : "N/A")
+        </dd>
+        <dt>
+            Státusz
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Megrendeles.Statusz)
+        </dd>
+        <dt>
+            Fizetésmód
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Megrendeles.FizetesMod)
+        </dd>
+        <dt>
+            Összérték
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Megrendeles.OsszErtek)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Megrendeles.ID">Módosítás</a> |
+    <a asp-page="./Index">Vissza a listához</a>
+</div>

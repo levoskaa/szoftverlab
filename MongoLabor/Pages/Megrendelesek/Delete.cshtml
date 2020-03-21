@@ -1,0 +1,52 @@
+﻿@page
+@model MongoLabor.Pages.Megrendelesek.DeleteModel
+
+@{
+    ViewData["Title"] = "Megrendelés törlése";
+}
+
+<h2>Megrendelés törlése</h2>
+
+<h3>Biztos vagy benne, hogy törölni szeretnéd ezt a megrendelést?</h3>
+<div>
+    <h4>Megrendelés</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Dátum
+        </dt>
+        <dd>
+            @(Model.Megrendeles.Datum.HasValue ? Model.Megrendeles.Datum.Value.ToString("d") : "N/A")
+        </dd>
+        <dt>
+            Határidő
+        </dt>
+        <dd>
+            @(Model.Megrendeles.Hatarido.HasValue ? Model.Megrendeles.Hatarido.Value.ToString("d") : "N/A")
+        </dd>
+        <dt>
+            Státusz
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Megrendeles.Statusz)
+        </dd>
+        <dt>
+            Fizetésmód
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Megrendeles.FizetesMod)
+        </dd>
+        <dt>
+            Összérték
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Megrendeles.OsszErtek)
+        </dd>
+    </dl>
+
+    <form method="post">
+        <input type="hidden" asp-for="Megrendeles.ID" />
+        <input type="submit" value="Törlés" class="btn btn-default" /> |
+        <a asp-page="./Index">Vissza a listához</a>
+    </form>
+</div>

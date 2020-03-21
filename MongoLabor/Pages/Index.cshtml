@@ -1,0 +1,36 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Főoldal";
+}
+
+<h1>Főoldal</h1>
+
+<p>Ez a weboldal arra szolgál, hogy a labor során elkészített repositoryfüggvények tesztelését elősegítse.</p>
+
+
+<div class="row">
+    <div class="col-md-3">
+        <h2>Feladat 1</h2>
+        <a asp-page="/Termekek/Index">Termékek</a> lekérdezése és módosítása
+    </div>
+    <div class="col-md-3">
+        <h2>Feladat 2</h2>
+         <a asp-page="/Kategoriak/Index">Kategóriák</a> listázása
+    </div>
+    <div class="col-md-3">
+        <h2>Feladat 3</h2>
+        <a asp-page="/Megrendelesek/Index">Megrendelések</a> lekérdezése és módosítása
+    </div>
+    <div class="col-md-3">
+        <h2>Feladat 4</h2>
+        <a asp-page="/Vevok/Index">Vevők</a> listázása
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h2>Feladat 5 (opcionális)</h2>
+        Megrendelések <a asp-page="/MegrendelesCsoportok/Index">csoportosítása</a> dátum alapján
+    </div>
+</div>

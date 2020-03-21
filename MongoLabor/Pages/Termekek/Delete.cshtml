@@ -1,0 +1,40 @@
+﻿@page
+@model MongoLabor.Pages.Termekek.DeleteModel
+
+@{
+    ViewData["Title"] = "Termék törlése";
+}
+
+<h2>Termék törlése</h2>
+
+<h3>Biztos vagy benne, hogy törölni szeretnéd ezt a terméket?</h3>
+<div>
+    <h4>Termék</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Név
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Termek.Nev)
+        </dd>
+        <dt>
+            Nettó ár
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Termek.NettoAr)
+        </dd>
+        <dt>
+            Raktárkészlet
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Termek.Raktarkeszlet)
+        </dd>
+    </dl>
+    
+    <form method="post">
+        <input type="hidden" asp-for="Termek.ID" />
+        <input type="submit" value="Törlés" class="btn btn-default" /> |
+        <a asp-page="./Index">Vissza a listához</a>
+    </form>
+</div>

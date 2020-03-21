@@ -1,0 +1,67 @@
+﻿@page
+@model MongoLabor.Pages.Megrendelesek.IndexModel
+
+@{
+    ViewData["Title"] = "Megrendelések";
+}
+
+<h2>Megrendelések</h2>
+
+<p>
+    <a asp-page="Create">Új megrendelés felvétele</a>
+</p>
+<form class="form-inline">
+    <div class="form-group">
+        <label class="control-label">Státusz:</label>
+        <input asp-for="KeresettStatusz" class="form-control" />
+        <input type="submit" value="Szűrés" />
+    </div>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Dátum
+            </th>
+            <th>
+                Határidő
+            </th>
+            <th>
+                Státusz
+            </th>
+            <th>
+                Fizetésmód
+            </th>
+            <th>
+                Összérték
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Megrendelesek) {
+        <tr>
+            <td>
+                @(item.Datum.HasValue ? item.Datum.Value.ToString("d") : "N/A")
+            </td>
+            <td>
+                @(item.Hatarido.HasValue ? item.Hatarido.Value.ToString("d") : "N/A")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Statusz)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FizetesMod)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OsszErtek)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.ID">Módosítás</a> |
+                <a asp-page="./Details" asp-route-id="@item.ID">Részletek</a> |
+                <a asp-page="./Delete" asp-route-id="@item.ID">Törlés</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

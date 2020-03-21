@@ -1,0 +1,44 @@
+﻿@page
+@model MongoLabor.Pages.Termekek.CreateModel
+
+@{
+    ViewData["Title"] = "Új termék hozzáadása";
+}
+
+<h2>Új termék hozzáadása</h2>
+
+<h4>Termék</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label class="control-label">Név</label>
+                <input asp-for="Termek.Nev" class="form-control" />
+                <span asp-validation-for="Termek.Nev" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Nettó ár</label>
+                <input asp-for="Termek.NettoAr" class="form-control" />
+                <span asp-validation-for="Termek.NettoAr" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Raktárkészlet</label>
+                <input asp-for="Termek.Raktarkeszlet" class="form-control" />
+                <span asp-validation-for="Termek.Raktarkeszlet" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Hozzáadás" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Vissza a listához</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

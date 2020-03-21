@@ -1,0 +1,47 @@
+﻿@page
+@model MongoLabor.Pages.Kategoriak.IndexModel
+@{
+    ViewData["Title"] = "Kategóriák";
+}
+
+<h2>Kategóriák</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Név
+            </th>
+            <th>
+                Szülőkategória
+            </th>
+            <th>
+                Termékek (darab)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Kategoriak)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nev)
+            </td>
+            <td>
+                @if (string.IsNullOrEmpty(item.SzuloKategoriaNev))
+                {
+                    @("N/A")
+                }
+                else
+                {
+                    @Html.DisplayFor(modelItem => item.SzuloKategoriaNev)
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TermekDarab)
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+

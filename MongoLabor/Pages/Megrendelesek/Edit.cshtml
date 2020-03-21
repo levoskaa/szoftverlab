@@ -1,0 +1,50 @@
+﻿@page
+@model MongoLabor.Pages.Megrendelesek.EditModel
+
+@{
+    ViewData["Title"] = "Megrendelés adatainak módosítása";
+}
+
+<h2>Megrendelés adatainak módosítása</h2>
+
+<h4>Megrendelés</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Megrendeles.ID" />
+            <div class="form-group">
+                <label class="control-label">Dátum</label>
+                <input asp-for="Megrendeles.Datum" type="date" class="form-control" />
+                <span asp-validation-for="Megrendeles.Datum" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Határidő</label>
+                <input asp-for="Megrendeles.Hatarido" type="date" class="form-control" />
+                <span asp-validation-for="Megrendeles.Hatarido" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Státusz</label>
+                <input asp-for="Megrendeles.Statusz" class="form-control" />
+                <span asp-validation-for="Megrendeles.Statusz" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Fizetésmód</label>
+                <input asp-for="Megrendeles.FizetesMod" class="form-control" />
+                <span asp-validation-for="Megrendeles.FizetesMod" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Módosítás" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Vissza a listához</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

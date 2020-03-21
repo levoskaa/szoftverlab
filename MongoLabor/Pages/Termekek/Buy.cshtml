@@ -1,0 +1,54 @@
+﻿@page
+@model MongoLabor.Pages.Termekek.BuyModel
+
+@{
+    ViewData["Title"] = "Vásárlás";
+}
+
+<h2>Vásárlás</h2>
+
+<h3>Hány darabot szeretnél vásárolni?</h3>
+<div>
+    <h4>Termék</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Név
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Termek.Nev)
+        </dd>
+        <dt>
+            Nettó ár
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Termek.NettoAr)
+        </dd>
+        <dt>
+            Raktárkészlet
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Termek.Raktarkeszlet)
+        </dd>
+    </dl>
+
+    <form method="post">
+        <div class="form-group">
+            <input type="hidden" asp-for="Termek.ID" />
+            <label class="control-label">Mennyiség</label>
+            <input asp-for="Mennyiseg" class="form-control" value="1" />
+            <span asp-validation-for="Mennyiseg" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Vásárlás" class="btn btn-default" />
+        </div>
+    </form>
+</div>
+
+<div>
+    <a asp-page="./Index">Vissza a listához</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

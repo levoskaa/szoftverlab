@@ -1,0 +1,115 @@
+﻿@page
+@model MongoLabor.Pages.MegrendelesCsoportok.IndexModel
+@{
+    ViewData["Title"] = "Megrendelések csoportosítása";
+}
+
+<h2>Megrendelések csoportosítása</h2>
+
+<form class="form-inline">
+    <div class="form-group">
+        <label class="control-label">Csoportok száma:</label>
+        <input asp-for="CsoportDarab" class="form-control" />
+        <input type="submit" value="Lekérdezés" />
+    </div>
+</form>
+
+<h3>Számosság csoportonként</h3>
+<div style="max-width: 70em;">
+    <canvas id="darabChart"></canvas>
+</div>
+
+<h3>Összérték csoportonként</h3>
+<div style="max-width: 70em;">
+    <canvas id="osszErtekChart"></canvas>
+</div>
+
+@section Scripts {
+    <script src="~/lib/moment/moment.js"></script>
+    <script src="~/lib/chart/Chart.bundle.js"></script>
+    <script>
+        const hatarok = [
+            @foreach(var hatar in Model.Hatarok)
+            {
+                @Html.Raw($"'{hatar.ToString("yyyy-MM-dd")}',\n")
+            }
+        ];
+        const darabok = [
+            @foreach (var hatar in Model.Hatarok.SkipLast(1))
+            {
+                var darab = Model.Csoportok.GetValueOrDefault(hatar)?.Darab ?? 0;
+                @Html.Raw($"{darab},\n")
+            }
+        ];
+        const osszErtekek = [
+            @foreach(var hatar in Model.Hatarok.SkipLast(1))
+            {
+                var osszErtek = Model.Csoportok.GetValueOrDefault(hatar)?.OsszErtek ?? 0;
+                @Html.Raw($"{osszErtek},\n")
+            }
+        ];
+
+        const options = {
+            scales: {
+                xAxes: [{
+                    display: false,
+                    barPercentage: 1.25,
+                    ticks: {
+                        max: @Html.Raw($"'{Model.Hatarok[Model.Hatarok.Count - 2].ToString("yyyy-MM-dd")}'"),
+                    }
+                },
+                {
+                    display: true,
+                    ticks: {
+                        autoSkip: false,
+                        max: @Html.Raw($"'{Model.Hatarok[Model.Hatarok.Count - 1].ToString("yyyy-MM-dd")}'"),
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+            legend: {
+                display: false
+            },
+            tooltips: {
+                callbacks: {
+                    title: function (tooltipItem, data) {
+                        const nextLabel = data.labels[tooltipItem[0].index + 1]
+                        return `${tooltipItem[0].label} – ${nextLabel}`;
+                    },
+                }
+            }
+        };
+
+        var ctxDarab = document.getElementById('darabChart').getContext('2d');
+        var darabChart = new Chart(ctxDarab, {
+            type: 'bar',
+            data: {
+                labels: hatarok,
+                datasets: [{
+                    label: 'Darab',
+                    data: darabok,
+                    backgroundColor: 'rgba(255, 99, 132, 1)',
+                }]
+            },
+            options: options
+        });
+
+        var ctxOsszErtek = document.getElementById('osszErtekChart').getContext('2d');
+        var osszErtekChart = new Chart(ctxOsszErtek, {
+            type: 'bar',
+            data: {
+                labels: hatarok,
+                datasets: [{
+                    label: 'Összérték',
+                    data: osszErtekek,
+                    backgroundColor: 'rgba(255, 99, 132, 1)',
+                }]
+            },
+            options: options
+        });
+    </script>
+}

@@ -1,0 +1,37 @@
+﻿@page
+@model MongoLabor.Pages.Termekek.DetailsModel
+
+@{
+    ViewData["Title"] = "Termék részletei";
+}
+
+<h2>Termék részletei</h2>
+
+<div>
+    <h4>Termék</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Név
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Termek.Nev)
+        </dd>
+        <dt>
+            Nettó ár
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Termek.NettoAr)
+        </dd>
+        <dt>
+            Raktárkészlet
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Termek.Raktarkeszlet)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Buy" asp-route-id="@Model.Termek.ID">Vásárlás</a> |
+    <a asp-page="./Index">Vissza a listához</a>
+</div>

@@ -1,0 +1,59 @@
+﻿@page
+@model MongoLabor.Pages.Megrendelesek.CreateModel
+
+@{
+    ViewData["Title"] = "Új megrendelés felvétele";
+}
+
+<h2>Új megrendelés felvétele</h2>
+
+<h4>Megrendelés</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label class="control-label">Dátum</label>
+                <input asp-for="Megrendeles.Datum" type="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" class="form-control" />
+                <span asp-validation-for="Megrendeles.Datum" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Határidő</label>
+                <input asp-for="Megrendeles.Hatarido" type="date" value="@DateTime.Today.AddDays(7).ToString("yyyy-MM-dd")" class="form-control" />
+                <span asp-validation-for="Megrendeles.Hatarido" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Státusz</label>
+                <input asp-for="Megrendeles.Statusz" class="form-control" />
+                <span asp-validation-for="Megrendeles.Statusz" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Fizetésmód</label>
+                <input asp-for="Megrendeles.FizetesMod" class="form-control" />
+                <span asp-validation-for="Megrendeles.FizetesMod" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Termék</label>
+                <select asp-for="TermekID" asp-items="Model.Termekek" class="form-control"></select>
+                <span asp-validation-for="TermekID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Mennyiség</label>
+                <input asp-for="Mennyiseg" class="form-control" value="1" />
+                <span asp-validation-for="Mennyiseg" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Létrehozás" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Vissza a listához</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

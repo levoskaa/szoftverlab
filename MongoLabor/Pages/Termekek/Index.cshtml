@@ -1,0 +1,48 @@
+﻿@page
+@model MongoLabor.Pages.Termekek.IndexModel
+
+@{
+    ViewData["Title"] = "Termékek";
+}
+
+<h2>Termékek</h2>
+
+<p>
+    <a asp-page="Create">Új termék hozzáadása</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Név
+            </th>
+            <th>
+                Nettó ár
+            </th>
+            <th>
+                Raktárkészlet
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Termekek) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nev)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NettoAr)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Raktarkeszlet)
+            </td>
+            <td>
+                <a asp-page="./Buy" asp-route-id="@item.ID">Vásárlás</a> |
+                <a asp-page="./Details" asp-route-id="@item.ID">Részletek</a> |
+                <a asp-page="./Delete" asp-route-id="@item.ID">Törlés</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

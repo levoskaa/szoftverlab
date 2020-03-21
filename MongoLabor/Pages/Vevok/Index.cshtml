@@ -1,0 +1,59 @@
+﻿@page
+@model MongoLabor.Pages.Vevok.IndexModel
+@{
+    ViewData["Title"] = "Vevők";
+}
+
+<h2>Vevők</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Név
+            </th>
+            <th>
+                Város
+            </th>
+            <th>
+                Utca
+            </th>
+            <th>
+                Irányítószám
+            </th>
+            <th>
+                Megrendelések összértéke
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Vevok)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nev)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Varos)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Utca)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IR)
+            </td>
+            <td>
+                @if (item.OsszMegrendeles.HasValue)
+                {
+                    @Html.DisplayFor(modelItem => item.OsszMegrendeles.Value)
+                }
+                else
+                {
+                    @("N/A")
+                }
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
