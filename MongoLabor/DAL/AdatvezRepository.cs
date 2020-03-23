@@ -10,10 +10,12 @@ namespace MongoLabor.DAL
     public class AdatvezRepository : IAdatvezRepository
     {
         private readonly IMongoCollection<Entities.Termek> termekCollection;
+        private readonly IMongoCollection<Entities.Kategoria> kategoriaCollection;
 
         public AdatvezRepository(IMongoDatabase database)
         {
             this.termekCollection = database.GetCollection<Entities.Termek>("termekek");
+            this.kategoriaCollection = database.GetCollection<Entities.Kategoria>("kategoriak");
         }
 
         public IList<Termek> ListTermekek()
@@ -77,7 +79,27 @@ namespace MongoLabor.DAL
 
         public IList<Kategoria> ListKategoriak()
         {
-            throw new NotImplementedException();
+            var dbKategoriak = kategoriaCollection
+                .Find(_ => true)
+                .ToList();
+
+            var termekDarabok = termekCollection
+                .Aggregate()
+                .Group(t => t.KategoriaID, g => new { KategoriaID = g.Key, TermekDarab = g.Count() })
+                .ToList();
+
+            return dbKategoriak
+                .Select(k =>
+                {
+                    string szuloKategoriaNev = null;
+                    if (k.SzuloKategoriaID.HasValue)
+                        szuloKategoriaNev = dbKategoriak.Single(sz => sz.ID == k.SzuloKategoriaID.Value).Nev;
+
+                    var termekDarab = termekDarabok.SingleOrDefault(td => td.KategoriaID == k.ID)?.TermekDarab ?? 0;
+
+                    return new Kategoria { Nev = k.Nev, SzuloKategoriaNev = szuloKategoriaNev, TermekDarab = termekDarab };
+                })
+                .ToList();
         }
 
         public IList<Megrendeles> ListMegrendelesek(string keresettStatusz = null)
