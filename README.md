@@ -23,7 +23,7 @@
  
 ### 4. labor: MongoDB programozása
 
-- Branch: 
+- Branch: mongo
 - Pontok:
   - -/20
   - imsc: 0/3
