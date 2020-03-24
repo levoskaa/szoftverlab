@@ -12,12 +12,14 @@ namespace MongoLabor.DAL
         private readonly IMongoCollection<Entities.Termek> termekCollection;
         private readonly IMongoCollection<Entities.Kategoria> kategoriaCollection;
         private readonly IMongoCollection<Entities.Megrendeles> megrendelesCollection;
+        private readonly IMongoCollection<Entities.Vevo> vevoCollection;
 
         public AdatvezRepository(IMongoDatabase database)
         {
             this.termekCollection = database.GetCollection<Entities.Termek>("termekek");
             this.kategoriaCollection = database.GetCollection<Entities.Kategoria>("kategoriak");
             this.megrendelesCollection = database.GetCollection<Entities.Megrendeles>("megrendelesek");
+            this.vevoCollection = database.GetCollection<Entities.Vevo>("vevok");
         }
 
         public IList<Termek> ListTermekek()
@@ -206,7 +208,31 @@ namespace MongoLabor.DAL
 
         public IList<Vevo> ListVevok()
         {
-            throw new NotImplementedException();
+            var dbVevok = vevoCollection
+                .Find(_ => true)
+                .ToList();
+
+            var osszMegrendelesek = megrendelesCollection
+                .Aggregate()
+                .Group(m => m.VevoID, g => new { VevoID = g.Key, Ossz = g.Sum(x => x.MegrendelesTetelek.Sum(mt => mt.Mennyiseg * mt.NettoAr)) })
+                .ToList();
+
+            return dbVevok
+                .Select(v =>
+                {
+                    var kozpontiTelephelyID = dbVevok
+                        .Single(w => w.ID == v.ID).KozpontiTelephelyID;
+                    var kozpontiTelephely = dbVevok
+                        .Single(w => w.ID == v.ID)
+                        .Telephelyek
+                        .Single(t => t.ID == kozpontiTelephelyID);
+                    var osszMegrendeles = osszMegrendelesek
+                        .SingleOrDefault(o => o.VevoID == v.ID);
+
+                    return new Vevo { Nev = v.Nev, IR = kozpontiTelephely.IR, Utca = kozpontiTelephely.Utca,
+                                      Varos = kozpontiTelephely.Varos, OsszMegrendeles =  osszMegrendeles?.Ossz};
+                })
+                .ToList();
         }
 
         public MegrendelesCsoportok MegrendelesCsoportosit(int csoportDarab)
