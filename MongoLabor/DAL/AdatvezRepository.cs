@@ -11,11 +11,13 @@ namespace MongoLabor.DAL
     {
         private readonly IMongoCollection<Entities.Termek> termekCollection;
         private readonly IMongoCollection<Entities.Kategoria> kategoriaCollection;
+        private readonly IMongoCollection<Entities.Megrendeles> megrendelesCollection;
 
         public AdatvezRepository(IMongoDatabase database)
         {
             this.termekCollection = database.GetCollection<Entities.Termek>("termekek");
             this.kategoriaCollection = database.GetCollection<Entities.Kategoria>("kategoriak");
+            this.megrendelesCollection = database.GetCollection<Entities.Megrendeles>("megrendelesek");
         }
 
         public IList<Termek> ListTermekek()
@@ -104,27 +106,102 @@ namespace MongoLabor.DAL
 
         public IList<Megrendeles> ListMegrendelesek(string keresettStatusz = null)
         {
-            throw new NotImplementedException();
+            List<Entities.Megrendeles> dbMegrendelesek;
+            if (string.IsNullOrEmpty(keresettStatusz))
+            {
+                dbMegrendelesek = megrendelesCollection
+                .Find(_ => true)
+                .ToList();
+            }
+            else
+            {
+                dbMegrendelesek = megrendelesCollection
+                .Find(m => m.Statusz.Equals(keresettStatusz))
+                .ToList();
+            }
+
+            var osszErtekek = megrendelesCollection
+                    .Find(_ => true)
+                    .Project(m => new { ID = m.ID, Ossz = m.MegrendelesTetelek.Sum(mt => mt.Mennyiseg * mt.NettoAr) })
+                    .ToList();
+
+            return dbMegrendelesek.Select(m => new Megrendeles
+                { 
+                    ID = m.ID.ToString(),
+                    Datum = m.Datum,
+                    Hatarido = m.Hatarido,
+                    Statusz = m.Statusz,
+                    FizetesMod = m.FizetesMod.Mod,
+                    OsszErtek = osszErtekek.SingleOrDefault(oe => oe.ID == m.ID)?.Ossz ?? 0
+                })
+                .ToList();
         }
 
         public Megrendeles FindMegrendeles(string id)
         {
-            throw new NotImplementedException();
+            var dbMegrendeles = megrendelesCollection
+                .Find(m => m.ID == ObjectId.Parse(id))
+                .SingleOrDefault();
+            if (dbMegrendeles == null)
+                return null;
+
+            var osszErtek = megrendelesCollection
+                .Find(m => m.ID == ObjectId.Parse(id))
+                .Project(m => new { ID = m.ID, Ossz = m.MegrendelesTetelek.Sum(mt => mt.Mennyiseg * mt.NettoAr) })
+                .SingleOrDefault();
+
+            return new Megrendeles
+            {
+                ID = dbMegrendeles.ID.ToString(),
+                Datum = dbMegrendeles.Datum,
+                Hatarido = dbMegrendeles.Hatarido,
+                Statusz = dbMegrendeles.Statusz,
+                FizetesMod = dbMegrendeles.FizetesMod.Mod,
+                OsszErtek = osszErtek?.Ossz ?? 0
+            };
         }
 
         public void InsertMegrendeles(Megrendeles megrendeles, Termek termek, int mennyiseg)
         {
-            throw new NotImplementedException();
+            var dbMegrendeles = new Entities.Megrendeles
+            {
+                VevoID = ObjectId.Parse("5d7e42adcffa8e1b64f7dbb9"),
+                TelephelyID = ObjectId.Parse("5d7e42adcffa8e1b64f7dbba"),
+                Datum = megrendeles.Datum,
+                Hatarido = megrendeles.Hatarido,
+                Statusz = megrendeles.Statusz,
+                FizetesMod = new Entities.FizetesMod { Mod = megrendeles.FizetesMod },
+                MegrendelesTetelek = new Entities.MegrendelesTetel[]
+                    {
+                        new Entities.MegrendelesTetel
+                        {
+                            TermekID = ObjectId.Parse(termek.ID),
+                            NettoAr = termek.NettoAr,
+                            Mennyiseg = mennyiseg,
+                            Statusz = megrendeles.Statusz
+                        }
+                    }
+            };
+            megrendelesCollection.InsertOne(dbMegrendeles);
         }
 
         public bool UpdateMegrendeles(Megrendeles megrendeles)
         {
-            throw new NotImplementedException();
+            var result = megrendelesCollection.UpdateOne(
+                filter: m => m.ID == ObjectId.Parse(megrendeles.ID),
+                update: Builders<Entities.Megrendeles>.Update.Combine(
+                        Builders<Entities.Megrendeles>.Update.Set(m => m.Datum, megrendeles.Datum),
+                        Builders<Entities.Megrendeles>.Update.Set(m => m.Hatarido, megrendeles.Hatarido),
+                        Builders<Entities.Megrendeles>.Update.Set(m => m.Statusz, megrendeles.Statusz),
+                        Builders<Entities.Megrendeles>.Update.Set(m => m.FizetesMod.Mod, megrendeles.FizetesMod)
+                    ),
+                options: new UpdateOptions { IsUpsert = false });
+            return result.MatchedCount > 0;
         }
 
         public void DeleteMegrendeles(string id)
         {
-            throw new NotImplementedException();
+            megrendelesCollection.DeleteOne(m => m.ID == ObjectId.Parse(id));
         }
 
         public IList<Vevo> ListVevok()
