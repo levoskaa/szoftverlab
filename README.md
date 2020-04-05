@@ -18,7 +18,7 @@
 
 - Branch: mssql
 - Pontok:
-  - -/20
+  - 20/20
   - imsc: 0/3
  
 ### 4. labor: MongoDB programozása
