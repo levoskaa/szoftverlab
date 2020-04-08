@@ -30,6 +30,14 @@ namespace api.DAL
             return ToModel(dbRecord);
         }
 
+        public Status FindByName(string statusName)
+        {
+            var dbRecord = db.Statuses.FirstOrDefault(s => s.Name == statusName);
+            if (dbRecord == null)
+                return null;
+            return ToModel(dbRecord);
+        }
+
         public Status Insert(CreateStatus value)
         {
             using (var tran = db.Database.BeginTransaction(System.Data.IsolationLevel.RepeatableRead))
@@ -51,9 +59,9 @@ namespace api.DAL
             return db.Statuses.Select(ToModel).ToList();
         }
 
-        private static Model.Status ToModel(DbStatus value)
+        private static Status ToModel(DbStatus value)
         {
-            return new Model.Status(value.Id, value.Name);
+            return new Status(value.Id, value.Name);
         }
     }
 }

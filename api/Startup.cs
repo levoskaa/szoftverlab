@@ -22,6 +22,7 @@ namespace api
 
             services.AddDbContext<DAL.EfDbContext.TasksDbContext>(options => options.UseSqlite("Data Source=tasks.db"));
             services.AddScoped<DAL.IStatusesRepository, DAL.StatusesRepository>();
+            services.AddScoped<DAL.ITasksRepository, DAL.TasksRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
