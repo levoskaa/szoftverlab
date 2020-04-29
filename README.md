@@ -25,7 +25,7 @@
 
 - Branch: mongo
 - Pontok:
-  - -/20
+  - 20/20
   - imsc: 0/3
   
 ### 5. labor: Entity Framework és REST API
